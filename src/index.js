@@ -1,7 +1,7 @@
 function fetchBeerOne() {
   fetch(`http://localhost:3000/beers/${1}`)
     .then((res) => res.json())
-    .then((data) => displayBeerOne(data));
+    .then((data) =>displayBeerOne(data));
 }
 fetchBeerOne();
 
@@ -16,7 +16,13 @@ function displayBeerOne(beer0ne) {
   ul.innerHTML = "";
   beer0ne.reviews.forEach((review) => {
     const li = document.createElement("li");
-    li.textContent = review;
+    let btn=document.createElement("button")
+    btn.addEventListener("click",handleDelete)
+    btn.textContent=" x "
+    btn.classList="button"
+    btn.id="btn"
+    li.textContent = ` ${review} `;
+    li.append(btn)
     ul.appendChild(li);
   });
 }
@@ -34,6 +40,31 @@ function displayBeerNames(beers){
     beers.map(beer=>{
     const li = document.createElement("li");
     li.textContent = beer.name;
+    li.addEventListener("click",()=>{
+      fetch(`http://localhost:3000/beers/${beer.id}`)
+      .then(res=>res.json())
+      .then(data=>{
+        let h1 = document.getElementById("beer-description");
+        h1.textContent = `${data.description}`;
+        let img = document.getElementById("beer-image");
+        img.src = `${data.image_url}`;
+        let name = document.getElementById("beer-name");
+        name.textContent = `${data.name}`;
+        let ul = document.getElementById("review-list");
+        ul.innerHTML = "";
+   data.reviews.forEach((review) => {
+    const li = document.createElement("li");
+    let btn=document.createElement("button")
+    btn.addEventListener("click",handleDelete)
+    btn.textContent=" x "
+    btn.classList="button"
+    btn.id="btn"
+    li.textContent = ` ${review} `;
+    li.append(btn)
+    ul.appendChild(li);
+  })
+      })
+    })
     ul.appendChild(li);
     })
 }
@@ -51,4 +82,9 @@ function addReview(){
     })
 }
 addReview()
+
+function handleDelete(e){
+    e.target.parentNode.remove()
+}
+handleDelete()
 
